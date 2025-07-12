@@ -175,6 +175,7 @@ var modelMap = map[string]string{
 	"claude-4-opus-think":     "claude_4_opus_thinking",
 	"gemini-2.5-pro":	   "gemini_2_5_pro_preview",
 	"o3":	   "openai_o3",
+	"o3-pro": 		   "openai_o3_pro",
 	"o4-mini-high":	   "openai_o4_mini_high",
 	"gpt-4.1":	   "gpt_4_1",
 	"gpt-4.1-mini":	   "gpt_4_1_mini",
@@ -198,7 +199,7 @@ func mapModelName(openAIModel string) string {
 	if mappedModel, exists := modelMap[openAIModel]; exists {
 		return mappedModel
 	}
-	return "deepseek_v3" // 默认模型
+	return "claude_4_opus_thinking" // 默认模型
 }
 
 // reverseMapModelName 将 You.com 模型名称映射回 OpenAI 模型名称。
@@ -207,7 +208,7 @@ func reverseMapModelName(youModel string) string {
 	if mappedModel, exists := reverseMap[youModel]; exists {
 		return mappedModel
 	}
-	return "deepseek-chat" // 默认模型
+	return "claude-4-opus-think" // 默认模型
 }
 
 // originalModel 存储原始的 OpenAI 模型名称。
