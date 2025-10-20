@@ -153,46 +153,46 @@ type ModelDetail struct {
 // modelMap 存储 OpenAI 模型名称到 You.com 模型名称的映射。
 var modelMap = map[string]string{
     "deepseek-reasoner":       "deepseek_r1",
-	"deepseek-chat":           "deepseek_v3",
-	"o3-mini-high":            "openai_o3_mini_high",
-	"o1":                      "openai_o1",
-	"gpt5":                     "gpt_5",
-	"gpt5-mini":               "gpt_5_mini",
-	"gpt-4o":                  "gpt_4o",
-	"gpt-4o-mini":             "gpt_4o_mini",
-	"claude-3-opus":           "claude_3_opus",
-	"claude-3.5-sonnet":       "claude_3_5_sonnet",
-	"gemini-1.5-pro":          "gemini_1_5_pro",
-	"gemini-2.0-flash":        "gemini_2_flash",
-	"llama-3.3-70b":           "llama3_3_70b",
-	"llama-4-maverick":        "llama4_maverick",
-	"llama-4-scout":           "llama4_scout",
-	"mistral-large-2":         "mistral_large_2",
-	"qwen3-235b":              "qwen3_235b",
-	"qwq-32b":                 "qwq_32b",
-	"qwen-2.5-72b":            "qwen2p5_72b",
-	"qwen-2.5-coder-32b":      "qwen2p5_coder_32b",
-	"command-r-plus":          "command_r_plus",
-	"claude-3-7-sonnet":       "claude_3_7_sonnet",
-	"claude-3-7-sonnet-think": "claude_3_7_sonnet_thinking",
+    "deepseek-chat":           "deepseek_v3",
+    "o3-mini-high":            "openai_o3_mini_high",
+    "o1":                      "openai_o1",
+    "gpt5":                     "gpt_5",
+    "gpt5-mini":               "gpt_5_mini",
+    "gpt-4o":                  "gpt_4o",
+    "gpt-4o-mini":             "gpt_4o_mini",
+    "claude-3-opus":           "claude_3_opus",
+    "claude-3.5-sonnet":       "claude_3_5_sonnet",
+    "gemini-1.5-pro":          "gemini_1_5_pro",
+    "gemini-2.0-flash":        "gemini_2_flash",
+    "llama-3.3-70b":           "llama3_3_70b",
+    "llama-4-maverick":        "llama4_maverick",
+    "llama-4-scout":           "llama4_scout",
+    "mistral-large-2":         "mistral_large_2",
+    "qwen3-235b":              "qwen3_235b",
+    "qwq-32b":                 "qwq_32b",
+    "qwen-2.5-72b":            "qwen2p5_72b",
+    "qwen-2.5-coder-32b":      "qwen2p5_coder_32b",
+    "command-r-plus":          "command_r_plus",
+    "claude-3-7-sonnet":       "claude_3_7_sonnet",
+    "claude-3-7-sonnet-think": "claude_3_7_sonnet_thinking",
     "claude-4-sonnet":         "claude_4_sonnet",
-	"claude-4-sonnet-think":   "claude_4_sonnet_thinking",
+    "claude-4-sonnet-think":   "claude_4_sonnet_thinking",
     "claude-4.5-sonnet":         "claude_4_5_sonnet",
-	"claude-4.5-sonnet-think":   "claude_4_5_sonnet_thinking",
+    "claude-4.5-sonnet-think":   "claude_4_5_sonnet_thinking",
     "claude-4-opus":           "claude_4_opus",
-	"claude-4-opus-think":     "claude_4_opus_thinking",
+    "claude-4-opus-think":     "claude_4_opus_thinking",
     "claude-4.1-opus":           "claude_4_1_opus",
-	"claude-4.1-opus-think":     "claude_4_1_opus_thinking",
-	"gemini-2.5-pro":	   "gemini_2_5_pro_preview",
-	"o3":	   "openai_o3",
-	"o3-pro":	   "openai_o3_pro",
-	"o4-mini-high":	   "openai_o4_mini_high",
-	"gpt-4.1":	   "gpt_4_1",
-	"grok-4":	   "grok_4",
-	"grok-3-beta":	   "grok_3",
-	"grok-3-mini":	   "grok_3_mini",
-	"grok-2":	   "grok_2",
-    "nous-hermes-2":	   "nous_hermes_2",
+    "claude-4.1-opus-think":     "claude_4_1_opus_thinking",
+    "gemini-2.5-pro":       "gemini_2_5_pro_preview",
+    "o3":       "openai_o3",
+    "o3-pro":       "openai_o3_pro",
+    "o4-mini-high":       "openai_o4_mini_high",
+    "gpt-4.1":       "gpt_4_1",
+    "grok-4":       "grok_4",
+    "grok-3-beta":       "grok_3",
+    "grok-3-mini":       "grok_3_mini",
+    "grok-2":       "grok_2",
+    "nous-hermes-2":       "nous_hermes_2",
 }
 
 // getReverseModelMap 创建并返回 modelMap 的反向映射（You.com 模型名称 -> OpenAI 模型名称）。
@@ -887,7 +887,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
     q.Add("q", finalQuery)
 
-    q.Add("chat", string(chatHistoryJSON))
+    if len(chatHistory) > 0 {
+        q.Add("chat", string(chatHistoryJSON))
+    }
     youReq.URL.RawQuery = q.Encode()
 
     // 添加调试信息
@@ -898,7 +900,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         fmt.Printf("  问题: %s\n", entry.Question)
         fmt.Printf("  回答: %s\n", entry.Answer)
     }
-    fmt.Printf("chat参数内容: %s\n", string(chatHistoryJSON))
+    if len(chatHistory) > 0 {
+        fmt.Printf("chat参数内容: %s\n", string(chatHistoryJSON))
+    } else {
+        fmt.Printf("chat参数内容: (省略)\n")
+    }
     fmt.Printf("===================\n\n")
 
     fmt.Printf("\n=== 完整请求信息 ===\n")
@@ -912,6 +918,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     youReq.Header = http.Header{
         "sec-ch-ua-platform":         {"Windows"},
         "Cache-Control":              {"no-cache"},
+        "Connection":                 {"keep-alive"},
         "sec-ch-ua":                  {`"Not(A:Brand";v="99", "Microsoft Edge";v="133", "Chromium";v="133"`},
         "sec-ch-ua-bitness":          {"64"},
         "sec-ch-ua-model":            {""},
@@ -948,7 +955,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 // getCookies 根据提供的 DS token 生成所需的 Cookie。
 func getCookies(dsToken string) map[string]string {
-    return map[string]string{
+    cookies := map[string]string{
         "guest_has_seen_legal_disclaimer": "true",
         "youchat_personalization":         "true",
         "DS":                              dsToken,                // 关键的 DS token
@@ -957,6 +964,15 @@ func getCookies(dsToken string) map[string]string {
         "ai_model":                        "deepseek_r1", // 示例 AI 模型
         "youchat_smart_learn":             "true",
     }
+    // 支持通过环境变量禁用部分Cookie：DISABLE_COOKIES=you_subscription,youpro_subscription
+    if disableList := os.Getenv("DISABLE_COOKIES"); disableList != "" {
+        parts := strings.Split(disableList, ",")
+        for _, p := range parts {
+            name := strings.TrimSpace(p)
+            delete(cookies, name)
+        }
+    }
+    return cookies
 }
 
 // handleNonStreamingResponse 处理非流式请求（带超时/重试/熔断）。
@@ -1001,7 +1017,7 @@ func handleNonStreamingResponse(r *http.Request, w http.ResponseWriter, tmplReq 
     var fullResponse strings.Builder
     scanner := bufio.NewScanner(resp.Body)
     buf := make([]byte, 0, 64*1024)
-    scanner.Buffer(buf, 1024*1024)
+    scanner.Buffer(buf, 4*1024*1024)
     for scanner.Scan() {
         line := scanner.Text()
         if strings.HasPrefix(line, "event: youChatToken") {
@@ -1047,7 +1063,7 @@ func handleNonStreamingResponse(r *http.Request, w http.ResponseWriter, tmplReq 
     }
 }
 
-// handleStreamingResponse 处理流式请求（带超时/重试/熔断，检测客户端断开）。
+// handleStreamingResponse 处理流式请求（带超时/重试/熔断，检测客户端断开 + 首字节超时回退移除chat）。
 func handleStreamingResponse(r *http.Request, w http.ResponseWriter, tmplReq *http.Request) {
     cb := reliability.YouUpstreamCB()
     if !cb.Allow() {
@@ -1060,90 +1076,216 @@ func handleStreamingResponse(r *http.Request, w http.ResponseWriter, tmplReq *ht
     w.Header().Set("Cache-Control", "no-cache")
     w.Header().Set("Connection", "keep-alive")
 
-    ctx, cancel := context.WithTimeout(r.Context(), reliability.GetStreamTimeout())
-    defer cancel()
+    flusher, _ := w.(http.Flusher)
+
+    // 整体超时，避免永不结束
+    parentCtx, parentCancel := context.WithTimeout(r.Context(), reliability.GetStreamTimeout())
+    defer parentCancel()
 
     client := reliability.GetHTTPClient()
-    idempKey := uuid.New().String()
-    build := func(ctx context.Context) (*http.Request, error) {
-        req, err := cloneRequestWithContext(tmplReq, ctx)
-        if err != nil {
-            return nil, err
-        }
-        req.Header.Set("Idempotency-Key", idempKey)
-        return req, nil
+
+    // 是否包含chat参数，决定是否需要回退重试
+    hadChat := false
+    if tmplReq != nil && tmplReq.URL != nil {
+        hadChat = tmplReq.URL.Query().Has("chat")
     }
 
-    resp, reason, err := reliability.DoWithRetry(ctx, reliability.YouUpstreamLabel, client, build)
+    // 单次尝试：支持首字节超时判定与SSE聚合解析
+    attempt := func(ctx context.Context, removeChat bool) (wroteAny bool, reason string, err error) {
+        idempKey := uuid.New().String()
+        build := func(ctx context.Context) (*http.Request, error) {
+            req, err := cloneRequestWithContext(tmplReq, ctx)
+            if err != nil {
+                return nil, err
+            }
+            // 根据需要移除chat参数
+            if removeChat {
+                q := req.URL.Query()
+                q.Del("chat")
+                req.URL.RawQuery = q.Encode()
+            }
+            req.Header.Set("Idempotency-Key", idempKey)
+            return req, nil
+        }
+
+        // 获取上游响应
+        resp, reasonRetry, err := reliability.DoWithRetry(ctx, reliability.YouUpstreamLabel, client, build)
+        if err != nil {
+            return false, reasonRetry, err
+        }
+        defer resp.Body.Close()
+
+        if resp.StatusCode >= 400 && resp.StatusCode < 500 {
+            // 4xx视为请求问题，直接透传错误，不计入熔断失败
+            body, _ := io.ReadAll(resp.Body)
+            http.Error(w, fmt.Sprintf("API returned status %d: %s", resp.StatusCode, string(body)), resp.StatusCode)
+            return false, "4xx", nil
+        }
+
+        // 读取SSE，按事件边界(\n\n)聚合，支持多行data
+        reader := bufio.NewReaderSize(resp.Body, 2*1024*1024)
+
+        // 为首字节超时创建子上下文，便于超时后立即中断读取
+        attemptCtx, attemptCancel := context.WithCancel(ctx)
+        defer attemptCancel()
+
+        firstByteTimer := time.NewTimer(reliability.GetStreamFirstByteTimeout())
+        defer firstByteTimer.Stop()
+        firstByteSeen := make(chan struct{}, 1)
+        go func() {
+            select {
+            case <-firstByteTimer.C:
+                // 首字节未到达触发取消
+                select {
+                case <-firstByteSeen:
+                    return
+                default:
+                    metrics.UpstreamIdleTimeoutsTotal.WithLabelValues(reliability.YouUpstreamLabel).Inc()
+                    attemptCancel()
+                }
+            case <-attemptCtx.Done():
+                return
+            case <-firstByteSeen:
+                return
+            }
+        }()
+
+        var curEvent string
+        var dataBuf strings.Builder
+        var sawFirstByte bool
+        var firstEventType string
+        var firstEventSample string
+        startRead := time.Now()
+
+        for {
+            if err := attemptCtx.Err(); err != nil {
+                return wroteAny, "context", err
+            }
+            line, err := reader.ReadString('\n')
+            if !sawFirstByte && line != "" {
+                sawFirstByte = true
+                select { case firstByteSeen <- struct{}{}: default: }
+                ttfb := time.Since(startRead)
+                metrics.UpstreamFirstByteSeconds.WithLabelValues(reliability.YouUpstreamLabel).Observe(ttfb.Seconds())
+                if ttfb > reliability.GetTTFBAlertThreshold() {
+                    fmt.Printf("[WARN] upstream first byte slow: %v (event=%s)\n", ttfb, firstEventType)
+                }
+            }
+            if err != nil {
+                if err == io.EOF {
+                    if !wroteAny {
+                        metrics.UpstreamNoEventsTotal.WithLabelValues(reliability.YouUpstreamLabel).Inc()
+                        return false, "no_events", nil
+                    }
+                    return wroteAny, "", nil
+                }
+                if attemptCtx.Err() != nil && !sawFirstByte {
+                    return false, "idle_timeout", fmt.Errorf("idle timeout before first byte")
+                }
+                return wroteAny, "stream_read", err
+            }
+
+            line = strings.TrimRight(line, "\r\n")
+
+            if line == "" { // 事件边界
+                if curEvent == "youChatToken" && dataBuf.Len() > 0 {
+                    payload := dataBuf.String()
+                    if firstEventType == "" {
+                        firstEventType = curEvent
+                        if len(payload) > 1024 {
+                            firstEventSample = payload[:1024]
+                        } else {
+                            firstEventSample = payload
+                        }
+                        // 打印采样（限制1KB）
+                        fmt.Printf("First event: %s, sample: %.1024s\n", firstEventType, firstEventSample)
+                    }
+                    var token YouChatResponse
+                    if err := json.Unmarshal([]byte(strings.TrimSpace(payload)), &token); err != nil {
+                        // 解码错误，记录原因但继续
+                        fmt.Printf("[WARN] decode_error: %v\n", err)
+                    } else if token.YouChatToken != "" {
+                        openAIResp := OpenAIStreamResponse{
+                            ID:      "chatcmpl-" + fmt.Sprintf("%d", time.Now().Unix()),
+                            Object:  "chat.completion.chunk",
+                            Created: time.Now().Unix(),
+                            Model:   reverseMapModelName(mapModelName(originalModel)),
+                            Choices: []Choice{{
+                                Delta:        Delta{Content: token.YouChatToken},
+                                Index:        0,
+                                FinishReason: "",
+                            }},
+                        }
+                        respBytes, _ := json.Marshal(openAIResp)
+                        if _, err := w.Write([]byte("data: " + string(respBytes) + "\n\n")); err != nil {
+                            metrics.ClientDisconnectsTotal.WithLabelValues("/v1/chat/completions").Inc()
+                            return wroteAny, "client_write_error", err
+                        }
+                        if flusher != nil {
+                            flusher.Flush()
+                        }
+                        wroteAny = true
+                    }
+                }
+                // 重置当前事件
+                curEvent = ""
+                dataBuf.Reset()
+                continue
+            }
+            if strings.HasPrefix(line, ":") {
+                // 注释行，忽略
+                continue
+            }
+            if strings.HasPrefix(line, "event:") {
+                curEvent = strings.TrimSpace(strings.TrimPrefix(line, "event:"))
+                continue
+            }
+            if strings.HasPrefix(line, "data:") {
+                if dataBuf.Len() > 0 {
+                    dataBuf.WriteByte('\n')
+                }
+                dataBuf.WriteString(strings.TrimSpace(strings.TrimPrefix(line, "data:")))
+                continue
+            }
+            // 其他字段（id/retry等）忽略
+        }
+    }
+
+    // 第一次尝试（包含chat参数）
+    wrote, reason, err := attempt(parentCtx, false)
     if err != nil {
+        // 上游连接/重试失败
         cb.OnFailure(reason)
+        if reason == "context" {
+            return
+        }
         http.Error(w, err.Error(), http.StatusBadGateway)
         return
     }
-    defer resp.Body.Close()
 
-    if resp.StatusCode >= 400 && resp.StatusCode < 500 {
-        cb.OnSuccess() // 视为请求问题，不影响熔断
-        body, _ := io.ReadAll(resp.Body)
-        http.Error(w, fmt.Sprintf("API returned status %d: %s", resp.StatusCode, string(body)), resp.StatusCode)
+    // 如果在首字节前空闲超时，回退一次：移除chat参数重试
+    if !wrote && reason == "idle_timeout" && hadChat {
+        fmt.Printf("idle before first byte, retrying without chat param...\n")
+        wrote2, reason2, err2 := attempt(parentCtx, true)
+        if err2 != nil {
+            cb.OnFailure(reason2)
+            if reason2 == "context" {
+                return
+            }
+            http.Error(w, err2.Error(), http.StatusBadGateway)
+            return
+        }
+        if !wrote2 && reason2 != "" {
+            cb.OnFailure(reason2)
+            return
+        }
+        cb.OnSuccess()
         return
     }
 
-    flusher, _ := w.(http.Flusher)
-    scanner := bufio.NewScanner(resp.Body)
-    for scanner.Scan() {
-        select {
-        case <-ctx.Done():
-            metrics.ClientDisconnectsTotal.WithLabelValues("/v1/chat/completions").Inc()
-            return
-        default:
-        }
-
-        line := scanner.Text()
-        if strings.HasPrefix(line, "event: youChatToken") {
-            if !scanner.Scan() {
-                break
-            }
-            data := scanner.Text()
-            if !strings.HasPrefix(data, "data: ") {
-                continue
-            }
-
-            var token YouChatResponse
-            if err := json.Unmarshal([]byte(strings.TrimPrefix(data, "data: ")), &token); err != nil {
-                continue
-            }
-
-            openAIResp := OpenAIStreamResponse{
-                ID:      "chatcmpl-" + fmt.Sprintf("%d", time.Now().Unix()),
-                Object:  "chat.completion.chunk",
-                Created: time.Now().Unix(),
-                Model:   reverseMapModelName(mapModelName(originalModel)),
-                Choices: []Choice{{
-                    Delta:        Delta{Content: token.YouChatToken},
-                    Index:        0,
-                    FinishReason: "",
-                }},
-            }
-
-            respBytes, _ := json.Marshal(openAIResp)
-            if _, err := w.Write([]byte("data: " + string(respBytes) + "\n\n")); err != nil {
-                metrics.ClientDisconnectsTotal.WithLabelValues("/v1/chat/completions").Inc()
-                cancel()
-                return
-            }
-            if flusher != nil {
-                flusher.Flush()
-            }
-        }
-    }
-
-    if err := scanner.Err(); err != nil {
-        // 如果是因上下文取消（超时或客户端断开）导致的错误，不视为上游失败
-        if ctx.Err() != nil {
-            return
-        }
-        cb.OnFailure("stream_read")
+    if !wrote && reason != "" {
+        // 无事件或读取错误
+        cb.OnFailure(reason)
         return
     }
 
